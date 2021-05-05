@@ -13,7 +13,7 @@ function _parse_link_graph_line(line) {
 	var numRegex = /\d/g
 	var faces = line.match(faceRegex);
 	var nodesAttached = line.match(attachementRegex);
-	var nodes = nodesAttached.map(function(attachement){ return attachement.match(numRegex)[0] })
+	var nodes = nodesAttached.map(function(attachement){ return parseInt(attachement.match(numRegex)[0]) })
 	
 	return { faces: {innerface:faces[0].replace(/{|}/g, ''), outerface:faces[1].replace(/{|}/g, '')},nodes }
 }
