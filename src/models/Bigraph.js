@@ -1,3 +1,4 @@
+var BigNetwork = require('./BigNetwork');
 class Bigraph {
 	static ROOT_TO_NODE_relation_type = "RNr"
 	static ROOT_TO_SITE_relation_type = "RSr"
@@ -12,8 +13,8 @@ class Bigraph {
 		this.links = [];
 		this.linkGraphRelations = [];
 	}
-	add_roots( numOfNewRoots ) { this.roots = this.roots+numOfNewRoots }
-	add_sites( numOfNewSites) { this.sites = this.sites+numOfNewSites }
+	add_roots( numOfNewRoots ) { this.roots = this.roots+numOfNewRoots; }
+	add_sites( numOfNewSites) { this.sites = this.sites+numOfNewSites; }
 	add_node(control,ports){ this.nodes.push( { id: this.nodes.length, ctrl: control, ports:ports } ) }
 	#_add_place_graph_relation( type, from, to) { 
 		var newElement = {
@@ -40,9 +41,62 @@ class Bigraph {
 		this.linkGraphRelations.push ({ linkId, nodeId }) 
 	}
 	open_outerface_for_link( linkId, name ) { var link = this.links.find( link => link.id === linkId); link.outerface=name; }
-	open_innerface_for_link( linkId, name ) { }
+	open_innerface_for_link( linkId, name ) { var link = this.links.find( link => link.id === linkId); link.innerface=name; }
 	
-	to_BigNetwork() { }
+	to_BigNetwork() {
+		var result = new BigNetwork();
+        var rootsIdsMap = new Map();
+		var sitesIdsMap = new Map();
+		var nodesIdsMap = new Map();
+		var linksIdsMap = new Map();
+		for(var i=0;i<this.roots;i++){
+			rootsIdsMap[i] = result.add_root();
+		}
+		for(var i=0;i<this.sites;i++){
+			sitesIdsMap[i] = result.add_site();
+		}
+		this.nodes.forEach( node => {
+			nodesIdsMap[node.id] = result.add_node(node.ctrl);
+		})
+		this.placeGraphRelations.forEach( rel => {
+			if (rel.type === Bigraph.ROOT_TO_NODE_relation_type) {
+				let internalRootId = rootsIdsMap[rel.from]
+				let internalNodeId = nodesIdsMap[rel.to]
+				result.connect_elements(internalRootId,internalNodeId,BigNetwork.PlaceGraphConnectionType);
+			}
+			else if (rel.type === Bigraph.NODE_TO_NODE_relation_type) {
+				let internalNodeFromId = nodesIdsMap[rel.from]
+				let internalNodeToId = nodesIdsMap[rel.to]
+				result.connect_elements(internalNodeFromId,internalNodeToId,BigNetwork.PlaceGraphConnectionType);
+			}
+			else if (rel.type === Bigraph.NODE_TO_NODE_relation_type) {
+				let internalNodeId = nodesIdsMap[rel.from]
+				let internalSiteId = sitesIdsMap[rel.to]
+				result.connect_elements(internalNodeId,internalSiteId,BigNetwork.PlaceGraphConnectionType);
+			}
+			else
+				throw new Error ("Unknow type of place graph relation"+rel.type)
+				
+		});
+		this.links.forEach( link => {
+			let internalLinkId = result.add_link();
+			linksIdsMap[link.id] = internalLinkId;
+			if (link.outerface !== "") {
+				let outerfaceId = result.add_outerface(link.outerface);
+				result.connect_elements(internalLinkId,outerfaceId,BigNetwork.LinkGraphConnectionType);
+			}
+			if (link.innerface !== "") {
+				let innerfaceId = result.add_innerface(link.innerface);
+				result.connect_elements(internalLinkId,innerfaceId,BigNetwork.LinkGraphConnectionType);
+			}
+		});
+		this.linkGraphRelations.forEach( rel => {
+			let from = rel.nodeId;
+			let to = rel.linkId;
+			result.connect_elements(from,to,BigNetwork.LinkGraphConnectionType);
+		});
+		return result;
+	}
 }
 
 module.exports = Bigraph
