@@ -47,13 +47,13 @@ var Converter = {
 						if (relIndex < bigraph.nodes.length)
 							bigraph.place_node_inside_root(lineIndex,relIndex)
 						else
-							bigraph.place_site_inside_root(lineIndex,relIndex)
+							bigraph.place_site_inside_root(lineIndex,relIndex-bigraph.get_nodes_count())
 					}
 					else {
 						if (relIndex < bigraph.nodes.length)
-							bigraph.place_node_inside_node(lineIndex,relIndex)
+							bigraph.place_node_inside_node(lineIndex-bigraph.get_roots_count(),relIndex)
 						else
-							bigraph.place_site_inside_node(lineIndex,relIndex)
+							bigraph.place_site_inside_node(lineIndex-bigraph.get_roots_count(),relIndex-bigraph.get_nodes_count())
 					}
 				}
 			})
@@ -64,7 +64,7 @@ var Converter = {
 			var parsedLGLine = _parse_link_graph_line(line)
 			bigraph.add_link()
 			parsedLGLine.nodes.forEach(function (nodeId) {
-				bigraph.attach_link_to_node(linkId = lineIndex,nodeId)
+				bigraph.attach_link_to_node(lineIndex,nodeId)
 			})
 			
 			if (parsedLGLine.faces.outerface != "")
@@ -87,7 +87,7 @@ var Converter = {
 		result.add_roots(elementsCountDeclaration.roots);
 		result.add_sites(elementsCountDeclaration.sites);
 		
-		var placeGraph = lines.slice(2,elementsCountDeclaration.roots+elementsCountDeclaration.nodes)
+		var placeGraph = lines.slice(2,2+elementsCountDeclaration.roots+elementsCountDeclaration.nodes)
 		Converter._add_place_graph_relations(placeGraph,result);
 		
 		var linkGraph = lines.slice(elementsCountDeclaration.roots+elementsCountDeclaration.nodes+2)
