@@ -59,6 +59,100 @@ class BigNetwork {
 			edges
 		}	
 	}
+	#_num_of_linkgraph_connections_by_node(nid) {
+		return this.linkGraphConnections.filter( conn => conn.from === nid ).length
+	}
+	#_make_first_row_of_text() {
+		let resutArray = this.regularNodes.map( (node,posIndex) => {
+			return "("+posIndex.toString()+", "+node.ctrl+":"+this.#_num_of_linkgraph_connections_by_node(node.id).toString()+")"
+		})
+		return "{"+resutArray.join(',')+"}"
+		
+	}
+	#_make_second_row_of_text() {
+		let resultArray = [this.rootNodes.length.toString(),this.regularNodes.length.toString(),this.siteNodes.length.toString()]
+		
+		return resultArray.join(' ')
+	}
+	#_find_row_in_place_graph_for_node_with_id(nid) {
+		let rootIndexWithId = this.rootNodes.findIndex( node => node.id === nid );
+		if (rootIndexWithId !== -1) 
+			return rootIndexWithId;
+		let nodeIndexWithId = this.regularNodes.findIndex( node => node.id === nid );
+		if (nodeIndexWithId !== -1) 
+			return nodeIndexWithId+this.rootNodes.length;
+		throw new Error("Cannot determine row index. Node with id:"+nid+" not found!");
+	}
+	#_find_column_in_place_graph_for_node_with_id(nid) {
+		let nodeIndexWithId = this.regularNodes.findIndex( node => node.id === nid );
+		if (nodeIndexWithId !== -1) 
+			return nodeIndexWithId;
+		let siteIndexWithId = this.siteNodes.findIndex( node => node.id === nid );
+		if (siteIndexWithId !== -1) 
+			return siteIndexWithId+this.regularNodes.length;
+		throw new Error("Cannot determine index in row. Node with id:"+nid+" not found!");
+	}
+	#_make_place_graph_as_text(){
+		let defaultPlaceGraphRow = Array(this.regularNodes.length+this.siteNodes.length).fill(false);
+		let resultRaw = Array.from(Array(this.rootNodes.length+this.regularNodes.length), () => ([...defaultPlaceGraphRow]));
+		
+		this.placeGraphConnections.forEach( connection => {
+			let row =  this.#_find_row_in_place_graph_for_node_with_id(connection.from);
+			let column = this.#_find_column_in_place_graph_for_node_with_id(connection.to);
+			resultRaw[row][column] = true;
+		});
+		
+		let resultArray = resultRaw.map ( row => { 
+			let rowConverter = row.map ( v => v === false ? "0" : "1"); 
+			return rowConverter.join(""); 
+		});
+		return resultArray.join('\n')
+	}
+	static #_wrap_face(faceNode) {
+		if (faceNode !== undefined)
+			return  "{"+faceNode.label+"}"
+		else 
+			return "{}"
+	}
+	#_make_link_graph_connection_for_link(linkId,mapOfPortsUsedByNode){
+		let connectionsForLink = this.linkGraphConnections.filter( connection => connection.to === linkId);
+		
+		let result = connectionsForLink.map( connection => { 
+			let nodeIndex = this.regularNodes.findIndex( node => node.id === connection.from );
+			let portIndex = mapOfPortsUsedByNode.has(nodeIndex) ? mapOfPortsUsedByNode.get(nodeIndex) : 0;
+			mapOfPortsUsedByNode.set(nodeIndex, (portIndex+1) );
+			return "("+nodeIndex+", "+portIndex+")";
+		});
+		
+		return "{"+result.join(", ")+"}"
+	}
+	#_make_link_graph_as_text(){
+		let result = [];
+		let mapOfPortsUsedByNode = new Map();
+		let resultArray = this.linkNodes.map( link => {
+			
+			let innerface_id = this.linkGraphConnections.find( connection => connection.from === link.id ).to
+			let innerface = this.innerfaceNodes.find ( innf => innf.id === innerface_id)
+			
+			let outerface_id = this.linkGraphConnections.find( connection => connection.from === link.id ).to
+			let outerface = this.outerfaceNodes.find ( outf => outf.id === outerface_id)
+			
+			innerface = BigNetwork.#_wrap_face(innerface);
+			outerface = BigNetwork.#_wrap_face(outerface);
+			
+			let connections = this.#_make_link_graph_connection_for_link(link.id,mapOfPortsUsedByNode);
+			return "("+innerface+", "+outerface+", "+connections+")"
+		});
+		return resultArray.join('\n');
+	}
+	to_text() {
+		var result = []
+		result.push(this.#_make_first_row_of_text());
+		result.push(this.#_make_second_row_of_text());
+		result.push(this.#_make_place_graph_as_text());
+		result.push(this.#_make_link_graph_as_text());
+		return result.join('\n');
+	}
 }
 
 module.exports = BigNetwork
