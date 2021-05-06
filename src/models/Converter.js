@@ -9,10 +9,11 @@ function _parse_place_graph_line(line) {
 }
 function _parse_link_graph_line(line) {
 	var faceRegex = /{\S*}/g
-	var attachementRegex = /(\d, \d)/g
-	var numRegex = /\d/g
+	var attachementRegex = /(\d+, \d+)/g
+	var numRegex = /\d+/g
 	var faces = line.match(faceRegex);
 	var nodesAttached = line.match(attachementRegex);
+	
 	var nodes = nodesAttached.map(function(attachement){ return parseInt(attachement.match(numRegex)[0]) })
 	
 	return { faces: {innerface:faces[0].replace(/{|}/g, ''), outerface:faces[1].replace(/{|}/g, '')},nodes }
@@ -33,7 +34,7 @@ var Converter = {
 		return nodes.map(function(nodeDef) { return Converter._parse_node(nodeDef)});
 	},
 	_extract_elements_count_declaration: function(line) {
-		var numRegex = /\d/g;
+		var numRegex = /\d+/g;
 		
 		var match = line.match(numRegex)
 		return {roots: parseInt(match[0]),nodes: parseInt(match[1]),sites: parseInt(match[2])}
