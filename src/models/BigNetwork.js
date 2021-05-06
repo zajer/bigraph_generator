@@ -13,32 +13,32 @@ class BigNetwork {
 	}
 	
 	add_root() { 
-		this.rootNodes.push({ id:this.#newElementId }); 
+		this.rootNodes.push({ id:this.#newElementId, label:(this.#newElementId).toString() }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_site() { 
-		this.siteNodes.push({ id:this.#newElementId }); 
+		this.siteNodes.push({ id:this.#newElementId, label:(this.#newElementId) }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
 	add_node(ctrl) { 
-		this.regularNodes.push({ id:this.#newElementId, ctrl }); 
+		this.regularNodes.push({ id:this.#newElementId, ctrl, label:ctrl+":"+(this.#newElementId).toString(), shape:"box" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.#newElementId }); 
+		this.linkNodes.push({ id:this.#newElementId, shape:"ellipse" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push({ id:this.#newElementId, name }); 
+		this.outerfaceNodes.push({ id:this.#newElementId, label:name, shape:"triangleDown" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push({ id:this.#newElementId, name }); 
+		this.innerfaceNodes.push({ id:this.#newElementId, label:name, shape:"traingle" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
@@ -50,7 +50,13 @@ class BigNetwork {
 		else
 			throw new Error ("Not implemented"); //detect the type of elements and infer the proper type of connection 
 	}
-	toNetworkDatasets() { throw new Error('Not implemented'); }
+	to_NetworkDatasets() {
+		let nodes = [...this.rootNodes, ...this.siteNodes, ...this.linkNodes, ...this.outerfaceNodes, ...this.innerfaceNodes, ...this.regularNodes]
+		return {
+			nodes,
+			edges:this.links
+		}	
+	}
 }
 
 module.exports = BigNetwork
