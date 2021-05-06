@@ -29,17 +29,17 @@ class BigNetwork {
 		return this.#newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.#newElementId, shape:"ellipse", color: '#90f399' }); 
+		this.linkNodes.push({ id:this.#newElementId, shape:"dot", color: '#90f399', size:5 }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push({ id:this.#newElementId, label:name, shape:"triangleDown", color: "#7BE141" }); 
+		this.outerfaceNodes.push({ id:this.#newElementId, label:name, shape:"triangleDown", color: "#7BE141", size:15 }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push({ id:this.#newElementId, label:name, shape:"traingle", color: "#7BE141" }); 
+		this.innerfaceNodes.push({ id:this.#newElementId, label:name, shape:"traingle", color: "#7BE141", size:15 }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
@@ -131,11 +131,12 @@ class BigNetwork {
 		let mapOfPortsUsedByNode = new Map();
 		let resultArray = this.linkNodes.map( link => {
 			
-			let innerface_id = this.linkGraphConnections.find( connection => connection.from === link.id ).to
-			let innerface = this.innerfaceNodes.find ( innf => innf.id === innerface_id)
-			
-			let outerface_id = this.linkGraphConnections.find( connection => connection.from === link.id ).to
-			let outerface = this.outerfaceNodes.find ( outf => outf.id === outerface_id)
+			let connectionToFaceId = this.linkGraphConnections.find( connection => connection.from === link.id )
+			var innerface,outerface
+			if (connectionToFaceId !== undefined) {
+				innerface = this.innerfaceNodes.find ( innf => innf.id === connectionToFaceId.to)
+				outerface = this.outerfaceNodes.find ( outf => outf.id === connectionToFaceId.to)
+			}
 			
 			innerface = BigNetwork.#_wrap_face(innerface);
 			outerface = BigNetwork.#_wrap_face(outerface);
