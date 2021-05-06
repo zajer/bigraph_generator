@@ -9,7 +9,8 @@ class BigNetwork {
 		this.outerfaceNodes = []
 		this.innerfaceNodes = []
 		this.regularNodes = []
-		this.links = []
+		this.placeGraphConnections = []
+		this.linkGraphConnections = []
 	}
 	
 	add_root() { 
@@ -44,17 +45,18 @@ class BigNetwork {
 	}
 	connect_elements(fromId,toId,type="") { 
 		if (type === BigNetwork.PlaceGraphConnectionType)
-			this.links.push({from:fromId,to:toId, arrows:"to", color:"#3377ff" }) 
+			this.placeGraphConnections.push({from:fromId,to:toId, arrows:"to", color:"#3377ff" }) 
 		else if (type === BigNetwork.LinkGraphConnectionType)
-			this.links.push({from:fromId,to:toId, color:"#7BE141"  }) 
+			this.linkGraphConnections.push({from:fromId,to:toId, color:"#7BE141"  }) 
 		else
 			throw new Error ("Not implemented"); //detect the type of elements and infer the proper type of connection 
 	}
 	to_NetworkDatasets() {
 		let nodes = [...this.rootNodes, ...this.siteNodes, ...this.linkNodes, ...this.outerfaceNodes, ...this.innerfaceNodes, ...this.regularNodes]
+		let edges = [...this.placeGraphConnections,...this.linkGraphConnections]
 		return {
 			nodes,
-			edges:this.links
+			edges
 		}	
 	}
 }
