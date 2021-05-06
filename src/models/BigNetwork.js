@@ -13,12 +13,12 @@ class BigNetwork {
 	}
 	
 	add_root() { 
-		this.rootNodes.push({ id:this.#newElementId, label:(this.#newElementId).toString() }); 
+		this.rootNodes.push({ id:this.#newElementId, label:(this.#newElementId).toString(), color: '#d780ff' }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_site() { 
-		this.siteNodes.push({ id:this.#newElementId, label:(this.#newElementId) }); 
+		this.siteNodes.push({ id:this.#newElementId, label:(this.#newElementId), color: '#d780ff' }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
@@ -28,25 +28,25 @@ class BigNetwork {
 		return this.#newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.#newElementId, shape:"ellipse" }); 
+		this.linkNodes.push({ id:this.#newElementId, shape:"ellipse", color: '#90f399' }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push({ id:this.#newElementId, label:name, shape:"triangleDown" }); 
+		this.outerfaceNodes.push({ id:this.#newElementId, label:name, shape:"triangleDown", color: "#7BE141" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push({ id:this.#newElementId, label:name, shape:"traingle" }); 
+		this.innerfaceNodes.push({ id:this.#newElementId, label:name, shape:"traingle", color: "#7BE141" }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1; 
 	}
 	connect_elements(fromId,toId,type="") { 
 		if (type === BigNetwork.PlaceGraphConnectionType)
-			this.links.push({from:fromId,to:toId, arrows:"to" }) 
+			this.links.push({from:fromId,to:toId, arrows:"to", color:"#3377ff" }) 
 		else if (type === BigNetwork.LinkGraphConnectionType)
-			this.links.push({from:fromId,to:toId  }) 
+			this.links.push({from:fromId,to:toId, color:"#7BE141"  }) 
 		else
 			throw new Error ("Not implemented"); //detect the type of elements and infer the proper type of connection 
 	}
