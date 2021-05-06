@@ -13,6 +13,9 @@ class Bigraph {
 		this.links = [];
 		this.linkGraphRelations = [];
 	}
+	get_roots_count() { return this.roots }
+	get_nodes_count() { return this.nodes.length }
+	get_sites_count() { return this.sites }
 	add_roots( numOfNewRoots ) { this.roots = this.roots+numOfNewRoots; }
 	add_sites( numOfNewSites) { this.sites = this.sites+numOfNewSites; }
 	add_node(control,ports){ this.nodes.push( { id: this.nodes.length, ctrl: control, ports:ports } ) }
@@ -69,7 +72,7 @@ class Bigraph {
 				let internalNodeToId = nodesIdsMap[rel.to]
 				result.connect_elements(internalNodeFromId,internalNodeToId,BigNetwork.PlaceGraphConnectionType);
 			}
-			else if (rel.type === Bigraph.NODE_TO_NODE_relation_type) {
+			else if (rel.type === Bigraph.NODE_TO_SITE_relation_type) {
 				let internalNodeId = nodesIdsMap[rel.from]
 				let internalSiteId = sitesIdsMap[rel.to]
 				result.connect_elements(internalNodeId,internalSiteId,BigNetwork.PlaceGraphConnectionType);
@@ -91,8 +94,8 @@ class Bigraph {
 			}
 		});
 		this.linkGraphRelations.forEach( rel => {
-			let from = rel.nodeId;
-			let to = rel.linkId;
+			let from = nodesIdsMap[rel.nodeId];
+			let to = linksIdsMap[rel.linkId];
 			result.connect_elements(from,to,BigNetwork.LinkGraphConnectionType);
 		});
 		return result;
