@@ -53,28 +53,28 @@ class Bigraph {
 		var nodesIdsMap = new Map();
 		var linksIdsMap = new Map();
 		for(var i=0;i<this.roots;i++){
-			rootsIdsMap[i] = result.add_root();
+			rootsIdsMap.set(i, result.add_root());
 		}
 		for(var i=0;i<this.sites;i++){
-			sitesIdsMap[i] = result.add_site();
+			sitesIdsMap.set(i, result.add_site());
 		}
 		this.nodes.forEach( node => {
-			nodesIdsMap[node.id] = result.add_node(node.ctrl);
+			nodesIdsMap.set(node.id, result.add_node(node.ctrl));
 		})
 		this.placeGraphRelations.forEach( rel => {
 			if (rel.type === Bigraph.ROOT_TO_NODE_relation_type) {
-				let internalRootId = rootsIdsMap[rel.from]
-				let internalNodeId = nodesIdsMap[rel.to]
+				let internalRootId = rootsIdsMap.get(rel.from)
+				let internalNodeId = nodesIdsMap.get(rel.to)
 				result.connect_elements(internalRootId,internalNodeId,BigNetwork.PlaceGraphConnectionType);
 			}
 			else if (rel.type === Bigraph.NODE_TO_NODE_relation_type) {
-				let internalNodeFromId = nodesIdsMap[rel.from]
-				let internalNodeToId = nodesIdsMap[rel.to]
+				let internalNodeFromId = nodesIdsMap.get(rel.from)
+				let internalNodeToId = nodesIdsMap.get(rel.to)
 				result.connect_elements(internalNodeFromId,internalNodeToId,BigNetwork.PlaceGraphConnectionType);
 			}
 			else if (rel.type === Bigraph.NODE_TO_SITE_relation_type) {
-				let internalNodeId = nodesIdsMap[rel.from]
-				let internalSiteId = sitesIdsMap[rel.to]
+				let internalNodeId = nodesIdsMap.get(rel.from)
+				let internalSiteId = sitesIdsMap.get(rel.to)
 				result.connect_elements(internalNodeId,internalSiteId,BigNetwork.PlaceGraphConnectionType);
 			}
 			else
@@ -83,7 +83,7 @@ class Bigraph {
 		});
 		this.links.forEach( link => {
 			let internalLinkId = result.add_link();
-			linksIdsMap[link.id] = internalLinkId;
+			linksIdsMap.set(link.id, internalLinkId);
 			if (link.outerface !== "") {
 				let outerfaceId = result.add_outerface(link.outerface);
 				result.connect_elements(internalLinkId,outerfaceId,BigNetwork.LinkGraphConnectionType);
@@ -94,8 +94,8 @@ class Bigraph {
 			}
 		});
 		this.linkGraphRelations.forEach( rel => {
-			let from = nodesIdsMap[rel.nodeId];
-			let to = linksIdsMap[rel.linkId];
+			let from = nodesIdsMap.get(rel.nodeId);
+			let to = linksIdsMap.get(rel.linkId);
 			result.connect_elements(from,to,BigNetwork.LinkGraphConnectionType);
 		});
 		return result;
