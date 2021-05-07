@@ -52,7 +52,7 @@ class BigNetwork {
 		return this.#newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.#newElementId, shape:"dot", color: '#90f399', size:5 }); 
+		this.linkNodes.push({ id:this.#newElementId, shape:"dot", color: '#90f399', size:5, label:this.#newElementId.toString() }); 
 		this.#newElementId++; 
 		return this.#newElementId - 1;
 	}
