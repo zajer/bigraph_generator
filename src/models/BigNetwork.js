@@ -30,12 +30,12 @@ class BigNetwork {
 	}
 
 	add_root() { 
-		this.rootNodes.push({ id:this.newElementId, label:(this.newElementId).toString(), color: 'd780ff' }); 
+		this.rootNodes.push({ id:this.newElementId, label:(this.newElementId).toString(), color: '#d780ff' }); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
 	add_site() { 
-		this.siteNodes.push({ id:this.newElementId, label:(this.newElementId), color: 'd780ff' }); 
+		this.siteNodes.push({ id:this.newElementId, label:(this.newElementId), color: '#d780ff' }); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
@@ -45,25 +45,25 @@ class BigNetwork {
 		return this.newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.newElementId, shape:"dot", color: '90f399', size:5, label:this.newElementId.toString() }); 
+		this.linkNodes.push({ id:this.newElementId, shape:"dot", color: '#90f399', size:5, label:this.newElementId.toString() }); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push({ id:this.newElementId, label:name, shape:"triangleDown", color: "7BE141", size:15 }); 
+		this.outerfaceNodes.push({ id:this.newElementId, label:name, shape:"triangleDown", color: "#7BE141", size:15 }); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push({ id:this.newElementId, label:name, shape:"traingle", color: "7BE141", size:15 }); 
+		this.innerfaceNodes.push({ id:this.newElementId, label:name, shape:"traingle", color: "#7BE141", size:15 }); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
 	connect_elements(fromId,toId,type="") { 
 		if (type === BigNetwork.PlaceGraphConnectionType)
-			this.placeGraphConnections.push({from:fromId,to:toId, arrows:"to", color:"3377ff" }) 
+			this.placeGraphConnections.push({from:fromId,to:toId, arrows:"to", color:"#3377ff" }) 
 		else if (type === BigNetwork.LinkGraphConnectionType)
-			this.linkGraphConnections.push({from:fromId,to:toId, color:"7BE141"  }) 
+			this.linkGraphConnections.push({from:fromId,to:toId, color:"#7BE141"  }) 
 		else
 			throw new Error ("Not implemented");
 	}
