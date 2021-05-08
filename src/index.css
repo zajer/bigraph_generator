@@ -1,0 +1,9 @@
+.pad1 {
+    padding: .5em
+}
+.margin1 {
+    margin: .5em
+}
+input[type=number]{
+    width:55px
+}
