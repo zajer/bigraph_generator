@@ -28,34 +28,51 @@ class BigNetwork {
 		}
 		
 	}
-
+	_make_root_visjs_element(label){
+		return { id:this.newElementId, label, color: '#d780ff' };
+	}
+	_make_site_visjs_element(label){
+		return { id:this.newElementId, label, color: '#fcb110' };
+	}
+	_make_node_visjs_element(ctrl,label){
+		return { id:this.newElementId, ctrl, label, shape:"box" }
+	}
+	_make_link_visjs_element(label){
+		return { id:this.newElementId, shape:"dot", color: '#90f399', size:5, label }
+	}
+	_make_outerface_visjs_element(label){
+		return { id:this.newElementId, label, shape:"triangleDown", color: "#7BE141", size:15 }
+	}
+	_make_innerface_visjs_element(label){
+		return { id:this.newElementId, label, shape:"triangle", color: "#7BE141", size:15 }
+	}
 	add_root() { 
-		this.rootNodes.push({ id:this.newElementId, label:(this.newElementId).toString(), color: '#d780ff' }); 
+		this.rootNodes.push(this._make_root_visjs_element(this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
 	add_site() { 
-		this.siteNodes.push({ id:this.newElementId, label:(this.newElementId), color: '#d780ff' }); 
+		this.siteNodes.push(this._make_site_visjs_element((this.newElementId).toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
 	add_node(ctrl) { 
-		this.regularNodes.push({ id:this.newElementId, ctrl, label:ctrl+":"+(this.newElementId).toString(), shape:"box" }); 
+		this.regularNodes.push(this._make_node_visjs_element(ctrl,ctrl+":"+(this.newElementId).toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
 	add_link() {
-		this.linkNodes.push({ id:this.newElementId, shape:"dot", color: '#90f399', size:5, label:this.newElementId.toString() }); 
+		this.linkNodes.push(this._make_link_visjs_element(this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push({ id:this.newElementId, label:name, shape:"triangleDown", color: "#7BE141", size:15 }); 
+		this.outerfaceNodes.push(this._make_outerface_visjs_element(name)); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push({ id:this.newElementId, label:name, shape:"traingle", color: "#7BE141", size:15 }); 
+		this.innerfaceNodes.push(this._make_innerface_visjs_element(name)); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
@@ -67,9 +84,43 @@ class BigNetwork {
 		else
 			throw new Error ("Not implemented");
 	}
-	to_NetworkDatasets() {
+	_append_legend_properties(visjsElement,id,x,y){
+		visjsElement["id"] = id;
+		visjsElement["x"] = x;
+		visjsElement["y"] = y;
+		visjsElement["fixed"] = true;
+		visjsElement["physics"] = false;
+	}
+	to_NetworkDatasets(networkDivElement) {
 		let nodes = [...this.rootNodes, ...this.siteNodes, ...this.linkNodes, ...this.outerfaceNodes, ...this.innerfaceNodes, ...this.regularNodes]
 		let edges = [...this.placeGraphConnections,...this.linkGraphConnections]
+		if (arguments.length == 1) {
+			let x = - networkDivElement.clientWidth / 2 + 50;
+			let y = - networkDivElement.clientWidth / 2 + 50;
+			let step = 70;
+			
+			let rootLegendElement = this._make_root_visjs_element("Root");
+			let nodeLegendElement = this._make_node_visjs_element("CtrlType","Node");
+			let siteLegendElement = this._make_site_visjs_element("Site");
+			let linkLegendElement = this._make_link_visjs_element("Link");
+			let outerfaceLegendElement = this._make_outerface_visjs_element("Outerface");
+			let innerfaceLegendElement = this._make_innerface_visjs_element("Innerface");
+			this._append_legend_properties(rootLegendElement,this.newElementId+1000,x,y);
+			this._append_legend_properties(nodeLegendElement,this.newElementId+1001,x,y+step);
+			this._append_legend_properties(siteLegendElement,this.newElementId+1002,x,y+2*step);
+			this._append_legend_properties(linkLegendElement,this.newElementId+1003,x,y+3*step);
+			this._append_legend_properties(outerfaceLegendElement,this.newElementId+1004,x,y+4*step);
+			this._append_legend_properties(innerfaceLegendElement,this.newElementId+1005,x,y+5*step);
+			
+			
+			nodes.push(rootLegendElement);
+			nodes.push(nodeLegendElement);
+			nodes.push(siteLegendElement);
+			nodes.push(linkLegendElement);
+			nodes.push(outerfaceLegendElement);
+			nodes.push(innerfaceLegendElement);
+
+		}
 		return {
 			nodes,
 			edges
