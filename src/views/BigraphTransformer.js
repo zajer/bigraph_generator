@@ -18,7 +18,7 @@ function _deactivate_button(id) {
 	buttonToActivate.classList.add("pure-button-disabled")
 }
 
-function _finishedReadingFile(e) {
+function _finished_reading_file(e) {
 	bigraphInputContent = e.target.result;
 	let hiddenButton = document.getElementById("async_trigger_button")
 	hiddenButton.click();
@@ -47,7 +47,7 @@ var bigraphImport = {
 					onclick: () => {
 						let bigraphAsTextFile = document.getElementById("bigraph_file").files[0];
 						let reader = new FileReader();
-						reader.onload = _finishedReadingFile;
+						reader.onload = _finished_reading_file;
 						reader.readAsText(bigraphAsTextFile);
 						_deactivate_button( "bigraph_upload_button" );
 						_activate_button( "process_bigraph_button" );

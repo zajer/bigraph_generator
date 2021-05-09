@@ -83,7 +83,7 @@ var bignetCreator = {
         ])
     }
 }
-function _bignedLoadedFromFile(e){
+function _bigned_loaded_from_file(e){
     let loadedBignetAsText = e.target.result;
     let loadedBignetJSON = JSON.parse(loadedBignetAsText);
 	bigNet = new BigNetwork(loadedBignetJSON);
@@ -134,7 +134,7 @@ module.exports = {
 						console.log("not implemented");
                         let bigraphAsTextFile = document.getElementById("bignet_file").files[0];
 						let reader = new FileReader();
-						reader.onload = _bignedLoadedFromFile;
+						reader.onload = _bigned_loaded_from_file;
 						reader.readAsText(bigraphAsTextFile);
 					}
 				}),
