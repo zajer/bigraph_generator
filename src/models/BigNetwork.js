@@ -46,35 +46,57 @@ class BigNetwork {
 	_make_innerface_visjs_element(label){
 		return { id:this.newElementId, label, shape:"triangle", color: "#7BE141", size:15 }
 	}
+	_delete_node_generic(arrayToDeleteFrom,id){
+		let index = arrayToDeleteFrom.findIndex( node => { return node.id === id });
+		arrayToDeleteFrom.splice(index,1);
+	}
 	add_root() { 
 		this.rootNodes.push(this._make_root_visjs_element(this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
+	}
+	delete_root(id){
+		this._delete_node_generic(this.rootNodes,id);
 	}
 	add_site() { 
 		this.siteNodes.push(this._make_site_visjs_element((this.newElementId).toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
+	delete_site(id){
+		this._delete_node_generic(this.siteNodes,id);
+	}
 	add_node(ctrl) { 
 		this.regularNodes.push(this._make_node_visjs_element(ctrl,ctrl+":"+(this.newElementId).toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
+	}
+	delete_node(id){
+		this._delete_node_generic(this.regularNodes,id);
 	}
 	add_link() {
 		this.linkNodes.push(this._make_link_visjs_element(this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1;
 	}
+	delete_link(id){
+		this._delete_node_generic(this.linkNodes,id);
+	}
 	add_outerface(name) { 
 		this.outerfaceNodes.push(this._make_outerface_visjs_element(name+":"+this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
+	delete_outerface(id){
+		this._delete_node_generic(this.outerfaceNodes,id);
+	}
 	add_innerface(name) { 
 		this.innerfaceNodes.push(this._make_innerface_visjs_element(name+":"+this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
+	}
+	delete_innerface(id){
+		this._delete_node_generic(this.outerfaceNodes,id);
 	}
 	connect_elements(fromId,toId,type="") { 
 		if (type === BigNetwork.PlaceGraphConnectionType)
@@ -82,7 +104,19 @@ class BigNetwork {
 		else if (type === BigNetwork.LinkGraphConnectionType)
 			this.linkGraphConnections.push({from:fromId,to:toId, color:"#7BE141"  }) 
 		else
-			throw new Error ("Not implemented");
+			throw new Error ("Unknown connection type:"+type);
+	}
+	_delete_connection_generic(arrayToDeleteFrom,from,to){
+		let index = arrayToDeleteFrom.findIndex( connection => {return (connection.from === from && connection.to === to) });
+		arrayToDeleteFrom.splice(index,1);
+	}
+	delete_connection(fromId,toId,type=""){
+		if (type === BigNetwork.PlaceGraphConnectionType)
+			this._delete_connection_generic(this.placeGraphConnections,fromId,toId);
+		else if (type === BigNetwork.LinkGraphConnectionType)
+			this._delete_connection_generic(this.linkGraphConnections,fromId,toId);
+		else
+			throw new Error ("Unknown connection type:"+type);
 	}
 	_append_legend_properties(visjsElement,id,x,y){
 		visjsElement["id"] = id;
@@ -97,7 +131,7 @@ class BigNetwork {
 		if (arguments.length == 1) {
 			let x = - networkDivElement.clientWidth;
 			let y = - networkDivElement.clientWidth / 2 + 50;
-			let step = 70;
+			let step = 55;
 			
 			let rootLegendElement = this._make_root_visjs_element("Root");
 			let nodeLegendElement = this._make_node_visjs_element("CtrlType","Node");

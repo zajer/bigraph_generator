@@ -8,7 +8,7 @@ class NamedObjectCreator {
     constructor(label,addFunc,delFunc){
         this.objectTypeLabel = label;
         this.addElementFunction = addFunc.bind(bigNet);
-        this.deletingElementFunction = delFunc;
+        this.deletingElementFunction = delFunc.bind(bigNet);
     }
     view = () => {
         return [
@@ -30,8 +30,8 @@ class NamedObjectCreator {
 class NamelessObjectCreator {
     constructor(label,addFunc,delFunc){
         this.objectTypeLabel = label;
-        this.addElementFunction = addFunc;
-        this.deleteElementFunction = delFunc;
+        this.addElementFunction = addFunc.bind(bigNet);
+        this.deleteElementFunction = delFunc.bind(bigNet);
     }
     view = () => {
         return [
@@ -50,7 +50,7 @@ class ConnectionCreator {
         this.connectionTypeLabel = label;
         this.connectionType = type;
         this.addElementFunction = addFunc.bind(bigNet);
-        this.deletingElementFunction = delFunc;
+        this.deletingElementFunction = delFunc.bind(bigNet);
     }
     view = () => {
         return [
@@ -64,7 +64,12 @@ class ConnectionCreator {
                     let to = document.getElementById(this.connectionTypeLabel+"-to").value;
                     this.addElementFunction(parseInt(from),parseInt(to),this.connectionType);
                 }} ,"Connect"),
-            m("button.margin1", { onclick: this.deletingElementFunction } ,"Delete connection")
+            m("button.margin1", { 
+                onclick: () => {
+                    let from = document.getElementById(this.connectionTypeLabel+"-from").value;
+                    let to = document.getElementById(this.connectionTypeLabel+"-to").value;
+                    this.deletingElementFunction(parseInt(from),parseInt(to),this.connectionType);
+            }} ,"Delete connection")
         ]
     }
 }
@@ -72,14 +77,14 @@ class ConnectionCreator {
 var bignetCreator = {
     view: () => {
         return m(".pure-g" ,[
-            m(".pure-u-1", m(new NamelessObjectCreator("Roots",bigNet.add_root,undefined))),
-            m(".pure-u-1", m(new NamedObjectCreator("Nodes",bigNet.add_node,undefined))),
-            m(".pure-u-1", m(new NamelessObjectCreator("Sites",bigNet.add_site,undefined))),
-            m(".pure-u-1", m(new ConnectionCreator("Place graph connections",BigNetwork.PlaceGraphConnectionType,bigNet.connect_elements,undefined) )),
-            m(".pure-u-1", m(new NamelessObjectCreator("Links",bigNet.add_link,undefined))),
-            m(".pure-u-1", m(new NamedObjectCreator("Outerfaces",bigNet.add_outerface,undefined))),
-            m(".pure-u-1", m(new NamedObjectCreator("Innerfaces",bigNet.add_innerface,undefined))),
-            m(".pure-u-1", m(new ConnectionCreator("Link graph connections",BigNetwork.LinkGraphConnectionType,bigNet.connect_elements,undefined) )),
+            m(".pure-u-1", m(new NamelessObjectCreator("Roots",bigNet.add_root,bigNet.delete_root))),
+            m(".pure-u-1", m(new NamedObjectCreator("Nodes",bigNet.add_node,bigNet.delete_node))),
+            m(".pure-u-1", m(new NamelessObjectCreator("Sites",bigNet.add_site,bigNet.delete_site))),
+            m(".pure-u-1", m(new ConnectionCreator("Place graph connections",BigNetwork.PlaceGraphConnectionType,bigNet.connect_elements,bigNet.delete_connection) )),
+            m(".pure-u-1", m(new NamelessObjectCreator("Links",bigNet.add_link,bigNet.delete_link))),
+            m(".pure-u-1", m(new NamedObjectCreator("Outerfaces",bigNet.add_outerface,bigNet.delete_outerface))),
+            m(".pure-u-1", m(new NamedObjectCreator("Innerfaces",bigNet.add_innerface,bigNet.delete_innerface))),
+            m(".pure-u-1", m(new ConnectionCreator("Link graph connections",BigNetwork.LinkGraphConnectionType,bigNet.connect_elements,bigNet.delete_connection) )),
         ])
     }
 }
