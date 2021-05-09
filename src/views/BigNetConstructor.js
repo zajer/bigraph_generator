@@ -131,6 +131,11 @@ module.exports = {
                 m("vl", { style: {'border-left': '1px solid black', 'height': '100%', 'position': 'absolute', 'left': '40%', 'margin-left': '-3px', 'top': 0}}),
                 m("a.pure-button .pure-button-primary .margin1", { id: "bignet_download_button" } ,"Save BigNet"),
                 m("a.pure-button .pure-button-primary .margin1", { id: "bigraph_download_button" } ,"Save BigNet as bigraph"),
+                m("button.pure-button .pure-button-primary", {
+                    onclick: () => {
+                        bigNet = new BigNetwork();
+                    } 
+                } ,"Reset BigNet"),
                 m("br"),
                 m("input.margin1", { 
 					id: 'bignet_file',
