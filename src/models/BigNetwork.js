@@ -181,21 +181,28 @@ class BigNetwork {
 		else 
 			return "{}"
 	}
-	_make_link_graph_connection_for_link(linkId,mapOfPortsUsedByNode){
+	_make_link_graph_connection_for_link(linkId){
 		let connectionsForLink = this.linkGraphConnections.filter( connection => connection.to === linkId);
-		
-		let result = connectionsForLink.map( connection => { 
-			let nodeIndex = this.regularNodes.findIndex( node => node.id === connection.from );
-			let portIndex = mapOfPortsUsedByNode.has(nodeIndex) ? mapOfPortsUsedByNode.get(nodeIndex) : 0;
-			mapOfPortsUsedByNode.set(nodeIndex, (portIndex+1) );
-			return "("+nodeIndex+", "+portIndex+")";
+		let mapOfPortsUsedByNodes = new Map();
+		connectionsForLink.forEach( connection => { 
+			let nodeId = connection.from;
+			mapOfPortsUsedByNodes.set(nodeId, mapOfPortsUsedByNodes.has(nodeId) ? mapOfPortsUsedByNodes.get(nodeId)+1 : 1 );
 		});
 		
+		let arrayOfRelativeNodesWithTheirPortsUsage = [];
+		mapOfPortsUsedByNodes.forEach( (numOfPorts,nodeId) => {
+			let nodeIndex = this.regularNodes.findIndex( node => node.id === nodeId );
+			arrayOfRelativeNodesWithTheirPortsUsage.push({nodeIndex,numOfPorts});
+		});
+		
+		let result = [];
+		result = arrayOfRelativeNodesWithTheirPortsUsage.map( entry => {			
+			return "(" + entry.nodeIndex+", " + entry.numOfPorts+")";
+		});
+
 		return "{"+result.join(", ")+"}"
 	}
 	_make_link_graph_as_text(){
-		let result = [];
-		let mapOfPortsUsedByNode = new Map();
 		let resultArray = this.linkNodes.map( link => {
 			
 			let connectionToFaceId = this.linkGraphConnections.find( connection => connection.from === link.id )
@@ -208,7 +215,7 @@ class BigNetwork {
 			innerface = BigNetwork._wrap_face(innerface);
 			outerface = BigNetwork._wrap_face(outerface);
 			
-			let connections = this._make_link_graph_connection_for_link(link.id,mapOfPortsUsedByNode);
+			let connections = this._make_link_graph_connection_for_link(link.id);
 			return "("+innerface+", "+outerface+", "+connections+")"
 		});
 		return resultArray.join('\n');

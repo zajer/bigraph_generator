@@ -14,7 +14,7 @@ function _parse_link_graph_line(line) {
 	var faces = line.match(faceRegex);
 	var nodesAttached = line.match(attachementRegex);
 	
-	var nodes = nodesAttached.map(function(attachement){ return parseInt(attachement.match(numRegex)[0]) })
+	var nodes = nodesAttached.map(function(attachement){ return [parseInt(attachement.match(numRegex)[0]), parseInt(attachement.match(numRegex)[1]) ] });
 	
 	return { faces: {innerface:faces[0].replace(/{|}/g, ''), outerface:faces[1].replace(/{|}/g, '')},nodes }
 }
@@ -64,8 +64,13 @@ var Converter = {
 		linkGraph.forEach(function (line,lineIndex) {
 			var parsedLGLine = _parse_link_graph_line(line)
 			bigraph.add_link()
-			parsedLGLine.nodes.forEach(function (nodeId) {
-				bigraph.attach_link_to_node(lineIndex,nodeId)
+			parsedLGLine.nodes.forEach(function (linkAttachement) {
+				let nodeId = linkAttachement[0];
+				let numOfConnections = linkAttachement[1];
+				if (numOfConnections === 0)
+					throw new Error("I don't know how to interpret 0 link connections to a node ( something like (nodeId, 0) in a link graph). ")
+				while(numOfConnections--)
+					bigraph.attach_link_to_node(lineIndex,nodeId)
 			})
 			
 			if (parsedLGLine.faces.outerface != "")
