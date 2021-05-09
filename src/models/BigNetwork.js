@@ -67,12 +67,12 @@ class BigNetwork {
 		return this.newElementId - 1;
 	}
 	add_outerface(name) { 
-		this.outerfaceNodes.push(this._make_outerface_visjs_element(name)); 
+		this.outerfaceNodes.push(this._make_outerface_visjs_element(name+":"+this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
 	add_innerface(name) { 
-		this.innerfaceNodes.push(this._make_innerface_visjs_element(name)); 
+		this.innerfaceNodes.push(this._make_innerface_visjs_element(name+":"+this.newElementId.toString())); 
 		this.newElementId++; 
 		return this.newElementId - 1; 
 	}
