@@ -83,11 +83,12 @@ var bignetCreator = {
         ])
     }
 }
-function _bigned_loaded_from_file(e){
+function _bignet_loaded_from_file(e){
+    console.log("loaded");
     let loadedBignetAsText = e.target.result;
     let loadedBignetJSON = JSON.parse(loadedBignetAsText);
 	bigNet = new BigNetwork(loadedBignetJSON);
-    let forceRefresh = document.getElementById("hidden_button");
+    let forceRefresh = document.getElementById("async_trigger_button");
     forceRefresh.click();
 }
 let network;
@@ -131,14 +132,13 @@ module.exports = {
 					type: 'file',
                     style : { width: '250px'},
 					onchange: () => { 
-						console.log("not implemented");
                         let bigraphAsTextFile = document.getElementById("bignet_file").files[0];
 						let reader = new FileReader();
-						reader.onload = _bigned_loaded_from_file;
+						reader.onload = _bignet_loaded_from_file;
 						reader.readAsText(bigraphAsTextFile);
 					}
 				}),
-                m("button",{ id:'hidden_button', style: {display: 'none'} } ,"Hidden button"),
+                m("button", { style: { display: 'none' }, id: 'async_trigger_button', onclick: () => {console.log('hidden click!')}},"")
             ]),
             m(".pure-u-3-5", m("", { id:"network_container", style:{ 'height': '100vh' } },"Here should be displayed a network."))
         ]);

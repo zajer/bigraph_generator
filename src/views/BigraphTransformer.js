@@ -4,9 +4,8 @@ var vis = require("vis-network")
 require("vis-network/styles/vis-network.min.css")
 
 let network;
-let bigraphInputContent = "You can paste bigraph as text here or import it from a file below.";
-let isBigraphProvided = false;
-let isBigraphConverted = false;
+let bigraphAsText = "You can paste a bigraph as text here or import it from a file below.";
+let isBigraphMarkedAsReady = false;
 
 function _activate_button(id) {
 	let buttonToActivate = document.getElementById(id);
@@ -19,7 +18,7 @@ function _deactivate_button(id) {
 }
 
 function _finished_reading_file(e) {
-	bigraphInputContent = e.target.result;
+	bigraphAsText = e.target.result;
 	let hiddenButton = document.getElementById("async_trigger_button")
 	hiddenButton.click();
 }
@@ -30,9 +29,11 @@ var bigraphImport = {
 			m(".pure-u-1", m("", "Bigraph as text")),
 			m(".pure-u-1", 
 				{ style: { 'padding' : '.7em' } },
-				m("textarea[rows=5][cols=60]", 
-					{ id:"bigraph_input", style: { 'width':'99%', 'resize':'none', 'height': '40vh' } },
-					bigraphInputContent
+				m("textarea[rows=5][cols=60]", { 
+					id:"bigraph_input", 
+					style: { 'width':'99%', 'resize':'none', 'height': '40vh' }
+					},
+					bigraphAsText
 			)),
 			m(".pure-u-1", [
 				m("input.margin1", { 
@@ -50,17 +51,15 @@ var bigraphImport = {
 						reader.onload = _finished_reading_file;
 						reader.readAsText(bigraphAsTextFile);
 						_deactivate_button( "bigraph_upload_button" );
-						_activate_button( "process_bigraph_button" );
 					}
 				},
 				"Load bigraph from a file"), 
-				m("button.pure-button .pure-button-primary .pure-button-disabled .margin1", {
+				m("button.pure-button .pure-button-primary .margin1", {
 					id: 'process_bigraph_button',
 					onclick: () => { 
-						//let bigraph_as_text_container = document.getElementById("bigraph_input");
-						//bigraphInputContent = bigraph_as_text_container.value;
-						isBigraphProvided = true;
-						_deactivate_button("process_bigraph_button");
+						let bigraphAsTextContainer = document.getElementById("bigraph_input");
+						bigraphAsText = bigraphAsTextContainer.value;
+						isBigraphMarkedAsReady = true;
 						_activate_button("bignet_download_button");
 					}
 				}, "Process"),
@@ -93,16 +92,16 @@ module.exports = {
 		network = new vis.Network(network_container, data, network_options);
 	},
 	onupdate: () => {
-		console.log("update");
-		if (isBigraphProvided) {
+		if (isBigraphMarkedAsReady) {
 			let bignetDownloadButton = document.getElementById("bignet_download_button");
-			let bigraph = Converter.text_2_bigraph(bigraphInputContent); 
+			let bigraph = Converter.text_2_bigraph(bigraphAsText); 
 			let bignet = bigraph.to_BigNetwork();
 			let data = bignet.to_NetworkDatasets();
 			network.setData(data);
 			let bignetBlob = new Blob([JSON.stringify(bignet)], {type: 'text/plain'});
 			URL.revokeObjectURL(bignetDownloadButton.href);
 			bignetDownloadButton.href = URL.createObjectURL(bignetBlob)
+			isBigraphMarkedAsReady = false;
 		}
 	},
     view: () => {
