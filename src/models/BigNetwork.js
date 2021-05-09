@@ -14,7 +14,7 @@ class BigNetwork {
 			this.linkGraphConnections = [];
 		}
 		else {
-			let source = JSON.parse(json);
+			let source = json;
 			this.rootNodes = source['rootNodes'];
 			this.siteNodes = source['siteNodes'];
 			this.linkNodes = source['linkNodes'];
@@ -22,8 +22,8 @@ class BigNetwork {
 			this.innerfaceNodes = source['innerfaceNodes'];
 			this.regularNodes = source['regularNodes'];
 			let deleteIdFun = connection => { if (connection.hasOwnProperty("id") ) { delete connection.id; return connection } } ;
-			this.placeGraphConnections = source['rootNodes'].map( deleteIdFun );
-			this.linkGraphConnections = source['rootNodes'].map ( deleteIdFun );
+			this.placeGraphConnections = source['placeGraphConnections'].map( deleteIdFun );
+			this.linkGraphConnections = source['linkGraphConnections'].map ( deleteIdFun );
 			this.newElementId = source["newElementId"]
 		}
 		
@@ -95,7 +95,7 @@ class BigNetwork {
 		let nodes = [...this.rootNodes, ...this.siteNodes, ...this.linkNodes, ...this.outerfaceNodes, ...this.innerfaceNodes, ...this.regularNodes]
 		let edges = [...this.placeGraphConnections,...this.linkGraphConnections]
 		if (arguments.length == 1) {
-			let x = - networkDivElement.clientWidth / 2 + 50;
+			let x = - networkDivElement.clientWidth;
 			let y = - networkDivElement.clientWidth / 2 + 50;
 			let step = 70;
 			

@@ -47,7 +47,6 @@ class NamelessObjectCreator {
 
 class ConnectionCreator {
     constructor(label,type,addFunc,delFunc){
-        console.log(addFunc);
         this.connectionTypeLabel = label;
         this.connectionType = type;
         this.addElementFunction = addFunc.bind(bigNet);
@@ -63,7 +62,7 @@ class ConnectionCreator {
                 onclick: () => {
                     let from = document.getElementById(this.connectionTypeLabel+"-from").value;
                     let to = document.getElementById(this.connectionTypeLabel+"-to").value;
-                    this.addElementFunction(from,to,this.connectionType);
+                    this.addElementFunction(parseInt(from),parseInt(to),this.connectionType);
                 }} ,"Connect"),
             m("button.margin1", { onclick: this.deletingElementFunction } ,"Delete connection")
         ]
@@ -84,12 +83,12 @@ var bignetCreator = {
         ])
     }
 }
-
-function saveBigNetToFile(){
-
-}
-function loadBigNetFromFile(){
-
+function _bignedLoadedFromFile(e){
+    let loadedBignetAsText = e.target.result;
+    let loadedBignetJSON = JSON.parse(loadedBignetAsText);
+	bigNet = new BigNetwork(loadedBignetJSON);
+    let forceRefresh = document.getElementById("hidden_button");
+    forceRefresh.click();
 }
 let network;
 module.exports = {
@@ -109,15 +108,37 @@ module.exports = {
         let networkContainer = document.getElementById("network_container");
         let data = bigNet.to_NetworkDatasets(networkContainer);
         network.setData(data);
+        let bignetDownloadButton = document.getElementById("bignet_download_button");
+        let bigraphDownloadButton = document.getElementById("bigraph_download_button");
+        let bignetBlob = new Blob([JSON.stringify(bigNet)], {type: "text/plain"});
+        let bigraphBlob = new Blob([bigNet.to_text()], {type: "text/plain"});
+        URL.revokeObjectURL(bignetDownloadButton.href);
+        URL.revokeObjectURL(bigraphDownloadButton.href);
+        bignetDownloadButton.href = URL.createObjectURL(bignetBlob);
+        bigraphDownloadButton.href = URL.createObjectURL(bigraphBlob);
     },
     view: () => {
         return m(".pure-g" ,[
-            m(".pure-u-2-5", { style: { height: '100vh', 'padding': ".5em", 'box-sizing':'border-box', 'border':'1px solid black' } }, [
+            m(".pure-u-2-5", { style: { height: '100vh', 'padding': ".5em", 'box-sizing':'border-box', 'border':'0px solid black' } }, [
                 m(bignetCreator),
                 m("hr", {width: "100%"}),
-                m(".pure-button .pure-button-primary .margin1", { onclick: saveBigNetToFile } ,"Save BigNet"),
-                m(".pure-button .pure-button-primary .margin1", { onclick: loadBigNetFromFile } ,"Load BigNet"),
-                m(".pure-button .pure-button-primary .margin1", { onclick: loadBigNetFromFile } ,"Save BigNet as bigraph")
+                m("vl", { style: {'border-left': '1px solid black', 'height': '100%', 'position': 'absolute', 'left': '40%', 'margin-left': '-3px', 'top': 0}}),
+                m("a.pure-button .pure-button-primary .margin1", { id: "bignet_download_button" } ,"Save BigNet"),
+                m("a.pure-button .pure-button-primary .margin1", { id: "bigraph_download_button" } ,"Save BigNet as bigraph"),
+                m("br"),
+                m("input.margin1", { 
+					id: 'bignet_file',
+					type: 'file',
+                    style : { width: '250px'},
+					onchange: () => { 
+						console.log("not implemented");
+                        let bigraphAsTextFile = document.getElementById("bignet_file").files[0];
+						let reader = new FileReader();
+						reader.onload = _bignedLoadedFromFile;
+						reader.readAsText(bigraphAsTextFile);
+					}
+				}),
+                m("button",{ id:'hidden_button', style: {display: 'none'} } ,"Hidden button"),
             ]),
             m(".pure-u-3-5", m("", { id:"network_container", style:{ 'height': '100vh' } },"Here should be displayed a network."))
         ]);
