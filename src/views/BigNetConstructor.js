@@ -18,8 +18,8 @@ class NamedObjectCreator {
             m("input.margin1", { id:(this.objectTypeLabel+"-name"),  type:"text", size:10, placeholder: "name" } ),
             m("button.margin1 .pure-button .pure-button-green", { 
                 onclick: () => {
-                    let ctrl = document.getElementById(this.objectTypeLabel+"-name").value;
-                    let newElement = this.addElementFunction(ctrl); 
+                    let name = document.getElementById(this.objectTypeLabel+"-name").value;
+                    let newElement = this.addElementFunction(name); 
                     localNodes.add(newElement);
                 }} ,"Add"),
             m("br"),

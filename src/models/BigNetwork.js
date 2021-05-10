@@ -42,11 +42,11 @@ class BigNetwork {
 	_make_link_visjs_element(label){
 		return { id:this.newElementId, shape:"dot", color: '#90f399', size:5, label }
 	}
-	_make_outerface_visjs_element(label){
-		return { id:this.newElementId, label, shape:"triangleDown", color: "#7BE141", size:15 }
+	_make_outerface_visjs_element(name){
+		return { id:this.newElementId, name, label:name+":"+this.newElementId.toString(), shape:"triangleDown", color: "#7BE141", size:15 }
 	}
-	_make_innerface_visjs_element(label){
-		return { id:this.newElementId, label, shape:"triangle", color: "#7BE141", size:15 }
+	_make_innerface_visjs_element(name){
+		return { id:this.newElementId, name, label:name+":"+this.newElementId.toString(), shape:"triangle", color: "#7BE141", size:15 }
 	}
 	_delete_node_generic(arrayToDeleteFrom,id){
 		let index = arrayToDeleteFrom.findIndex( node => { return node.id === id });
@@ -90,7 +90,7 @@ class BigNetwork {
 		return this._delete_node_generic(this.linkNodes,id);
 	}
 	add_outerface(name) { 
-		let newElement = this._make_outerface_visjs_element(name+":"+this.newElementId.toString());
+		let newElement = this._make_outerface_visjs_element(name);
 		this.outerfaceNodes.push(newElement);
 		this.newElementId++; 
 		return newElement;
@@ -99,7 +99,7 @@ class BigNetwork {
 		return this._delete_node_generic(this.outerfaceNodes,id);
 	}
 	add_innerface(name) { 
-		let newElement = this._make_innerface_visjs_element(name+":"+this.newElementId.toString());
+		let newElement = this._make_innerface_visjs_element(name);
 		this.innerfaceNodes.push(newElement); 
 		this.newElementId++; 
 		return newElement;
@@ -229,7 +229,7 @@ class BigNetwork {
 	}
 	static _wrap_face(faceNode) {
 		if (faceNode !== undefined)
-			return  "{"+faceNode.label+"}"
+			return  "{"+faceNode.name+"}"
 		else 
 			return "{}"
 	}
