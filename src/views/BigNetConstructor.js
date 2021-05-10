@@ -173,6 +173,13 @@ module.exports = {
 						reader.readAsText(bigraphAsTextFile);
 					}
 				}),
+                m("br"),
+                m("a.pure-button .pure-button-primary .margin1", {
+					onclick: () => {
+						location.hash="#!/view/";
+					}
+				},
+				"Go to bigraph editor"),
                 m("button", { style: { display: 'none' }, id: 'async_trigger_button', onclick: () => {console.log('hidden click!')}},"")
             ]),
             m(".pure-u-3-5", m("", { id:"network_container", style:{ 'height': '100vh' } },"Here should be displayed a network."))
