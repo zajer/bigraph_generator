@@ -53,13 +53,13 @@ class Bigraph {
 		var nodesIdsMap = new Map();
 		var linksIdsMap = new Map();
 		for(var i=0;i<this.roots;i++){
-			rootsIdsMap.set(i, result.add_root());
+			rootsIdsMap.set(i, result.add_root().id);
 		}
 		for(var i=0;i<this.sites;i++){
-			sitesIdsMap.set(i, result.add_site());
+			sitesIdsMap.set(i, result.add_site().id);
 		}
 		this.nodes.forEach( node => {
-			nodesIdsMap.set(node.id, result.add_node(node.ctrl));
+			nodesIdsMap.set(node.id, result.add_node(node.ctrl).id);
 		})
 		this.placeGraphRelations.forEach( rel => {
 			if (rel.type === Bigraph.ROOT_TO_NODE_relation_type) {
@@ -82,14 +82,14 @@ class Bigraph {
 				
 		});
 		this.links.forEach( link => {
-			let internalLinkId = result.add_link();
+			let internalLinkId = result.add_link().id;
 			linksIdsMap.set(link.id, internalLinkId);
 			if (link.outerface !== "") {
-				let outerfaceId = result.add_outerface(link.outerface);
+				let outerfaceId = result.add_outerface(link.outerface).id;
 				result.connect_elements(internalLinkId,outerfaceId,BigNetwork.LinkGraphConnectionType);
 			}
 			if (link.innerface !== "") {
-				let innerfaceId = result.add_innerface(link.innerface);
+				let innerfaceId = result.add_innerface(link.innerface).id;
 				result.connect_elements(internalLinkId,innerfaceId,BigNetwork.LinkGraphConnectionType);
 			}
 		});

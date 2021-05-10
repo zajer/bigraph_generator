@@ -98,7 +98,7 @@ module.exports = {
 			let bignet = bigraph.to_BigNetwork();
 			let data = bignet.to_NetworkDatasets();
 			network.setData(data);
-			let bignetBlob = new Blob([JSON.stringify(bignet)], {type: 'text/plain'});
+			let bignetBlob = new Blob([JSON.stringify(bignet)], {type: 'application/json'});
 			URL.revokeObjectURL(bignetDownloadButton.href);
 			bignetDownloadButton.href = URL.createObjectURL(bignetBlob)
 			isBigraphMarkedAsReady = false;
