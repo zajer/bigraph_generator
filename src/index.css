@@ -7,3 +7,20 @@
 input[type=number]{
     width:55px
 }
+.pure-button-green,
+.pure-button-red,
+.pure-button-custom{
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    font-size: 80%;
+}
+.small-button{
+    font-size: 80%;
+}
+.pure-button-green{
+    background: rgb(28, 184, 65);
+}
+.pure-button-red{
+    background: rgb(202, 60, 60);
+}

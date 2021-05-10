@@ -16,7 +16,7 @@ class NamedObjectCreator {
             m("label", this.objectTypeLabel),
             m("br"),
             m("input.margin1", { id:(this.objectTypeLabel+"-name"),  type:"text", size:10, placeholder: "name" } ),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-green", { 
                 onclick: () => {
                     let ctrl = document.getElementById(this.objectTypeLabel+"-name").value;
                     let newElement = this.addElementFunction(ctrl); 
@@ -24,7 +24,7 @@ class NamedObjectCreator {
                 }} ,"Add"),
             m("br"),
             m("input.margin1", {  id:(this.objectTypeLabel+"-id"), type:"number", placeholder: "ID" } ),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => {
                     let id = document.getElementById(this.objectTypeLabel+"-id").value;
                     this.deletingElementFunction(id);
@@ -44,14 +44,14 @@ class NamelessObjectCreator {
         return [
             m("label", this.objectTypeLabel),
             m("br"),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-green", { 
                 onclick: () => { 
                     let newElement = this.addElementFunction(); 
                     localNodes.add(newElement); 
                 }} ,"Add"),
             m("br"),
             m("input.margin1", { id:(this.objectTypeLabel+"-id"),  type:"number", placeholder: "ID" } ),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => { 
                     let id = document.getElementById(this.objectTypeLabel+"-id").value;
                     this.deletingElementFunction(id);
@@ -74,14 +74,14 @@ class ConnectionCreator {
             m("br"),
             m("input.margin1", { id:(this.connectionTypeLabel+"-from"), type:"number", placeholder: "From" } ),
             m("input.margin1", { id:(this.connectionTypeLabel+"-to"), type:"number", placeholder: "To" } ),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-green", { 
                 onclick: () => {
                     let from = document.getElementById(this.connectionTypeLabel+"-from").value;
                     let to = document.getElementById(this.connectionTypeLabel+"-to").value;
                     let newElement = this.addElementFunction(parseInt(from),parseInt(to),this.connectionType);
                     localConnections.add(newElement);
                 }} ,"Connect"),
-            m("button.margin1", { 
+            m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => {
                     let from = parseInt(document.getElementById(this.connectionTypeLabel+"-from").value);
                     let to = parseInt(document.getElementById(this.connectionTypeLabel+"-to").value);
@@ -96,12 +96,19 @@ var bignetCreator = {
     view: () => {
         return m(".pure-g" ,[
             m(".pure-u-1", m(new NamelessObjectCreator("Roots",bigNet.add_root,bigNet.delete_root))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new NamedObjectCreator("Nodes",bigNet.add_node,bigNet.delete_node))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new NamelessObjectCreator("Sites",bigNet.add_site,bigNet.delete_site))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new ConnectionCreator("Place graph connections",BigNetwork.PlaceGraphConnectionType,bigNet.connect_elements,bigNet.delete_connection) )),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new NamelessObjectCreator("Links",bigNet.add_link,bigNet.delete_link))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new NamedObjectCreator("Outerfaces",bigNet.add_outerface,bigNet.delete_outerface))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new NamedObjectCreator("Innerfaces",bigNet.add_innerface,bigNet.delete_innerface))),
+            m("hr", {width: "100%"}),
             m(".pure-u-1", m(new ConnectionCreator("Link graph connections",BigNetwork.LinkGraphConnectionType,bigNet.connect_elements,bigNet.delete_connection) )),
         ])
     }
@@ -152,9 +159,9 @@ module.exports = {
                 m(bignetCreator),
                 m("hr", {width: "100%"}),
                 m("vl", { style: {'border-left': '1px solid black', 'height': '100%', 'position': 'absolute', 'left': '40%', 'margin-left': '-3px', 'top': 0}}),
-                m("a.pure-button .pure-button-primary .margin1", { id: "bignet_download_button" } ,"Save BigNet"),
-                m("a.pure-button .pure-button-primary .margin1", { id: "bigraph_download_button" } ,"Save BigNet as bigraph"),
-                m("button.pure-button .pure-button-primary", {
+                m("a.pure-button .pure-button-primary .margin1 .small-button", { id: "bignet_download_button" } ,"Save BigNet"),
+                m("a.pure-button .pure-button-primary .margin1 .small-button", { id: "bigraph_download_button" } ,"Save BigNet as bigraph"),
+                m("button.pure-button .pure-button-primary .small-button", {
                     onclick: () => {
                         bigNet = new BigNetwork();
                         localNodes.clear();
@@ -174,7 +181,7 @@ module.exports = {
 					}
 				}),
                 m("br"),
-                m("a.pure-button .pure-button-primary .margin1", {
+                m("a.pure-button .pure-button-primary .margin1 .small-button", {
 					onclick: () => {
 						location.hash="#!/view/";
 					}
