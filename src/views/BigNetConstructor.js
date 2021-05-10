@@ -26,9 +26,9 @@ class NamedObjectCreator {
             m("input.margin1", {  id:(this.objectTypeLabel+"-id"), type:"number", placeholder: "ID" } ),
             m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => {
-                    let id = document.getElementById(this.objectTypeLabel+"-id").value;
+                    let id = parseInt(document.getElementById(this.objectTypeLabel+"-id").value);
                     this.deletingElementFunction(id);
-                    localNodes.remove(parseInt(id));
+                    localNodes.remove(id);
                 }} ,"Delete")
         ]
     }
@@ -53,9 +53,9 @@ class NamelessObjectCreator {
             m("input.margin1", { id:(this.objectTypeLabel+"-id"),  type:"number", placeholder: "ID" } ),
             m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => { 
-                    let id = document.getElementById(this.objectTypeLabel+"-id").value;
+                    let id = parseInt(document.getElementById(this.objectTypeLabel+"-id").value);
                     this.deletingElementFunction(id);
-                    localNodes.remove(parseInt(id));
+                    localNodes.remove(id);
                 }} ,"Delete")
         ]
     }
