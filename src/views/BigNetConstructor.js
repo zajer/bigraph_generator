@@ -157,6 +157,8 @@ module.exports = {
                 m("button.pure-button .pure-button-primary", {
                     onclick: () => {
                         bigNet = new BigNetwork();
+                        localNodes.clear();
+                        localConnections.clear();
                     } 
                 } ,"Reset BigNet"),
                 m("br"),
