@@ -54,7 +54,7 @@ class NamelessObjectCreator {
             m("button.margin1 .pure-button .pure-button-red", { 
                 onclick: () => { 
                     let id = parseInt(document.getElementById(this.objectTypeLabel+"-id").value);
-                    this.deletingElementFunction(id);
+                    this.deleteElementFunction(id);
                     localNodes.remove(id);
                 }} ,"Delete")
         ]
