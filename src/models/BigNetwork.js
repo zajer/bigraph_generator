@@ -78,6 +78,7 @@ class BigNetwork {
 		return newElement;
 	}
 	delete_node(id){
+		this._delete_connections_associated_with_element(id);
 		return this._delete_node_generic(this.regularNodes,id);
 	}
 	add_link() {
@@ -135,6 +136,16 @@ class BigNetwork {
 			return this._delete_connection_generic(this.linkGraphConnections,fromId,toId);
 		else
 			throw new Error ("Unknown connection type:"+type);
+	}
+	_delete_connections_associated_with_element(elementId){
+		let deletedPlaceGraphConnections = this.placeGraphConnections.filter(c => c.from === elementId || c.to === elementId );
+		let deletedLinkGraphConnections = this.linkGraphConnections.filter(c => c.from === elementId || c.to === elementId );
+		deletedPlaceGraphConnections.forEach( c => {
+			this.delete_connection(c.from,c.to,BigNetwork.PlaceGraphConnectionType);
+		});
+		deletedLinkGraphConnections.forEach( c => {
+			this.delete_connection(c.from,c.to,BigNetwork.LinkGraphConnectionType);
+		})
 	}
 	_append_legend_properties(visjsElement,id,x,y){
 		visjsElement["id"] = id;
